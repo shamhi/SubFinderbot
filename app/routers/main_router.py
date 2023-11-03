@@ -76,47 +76,38 @@ async def search_cmd_args(call: CallbackQuery, state: FSMContext):
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE
         )
-        msg = await call.message.answer("<b>Обработка</b> <code>0%..</code>", parse_mode='html')
 
-        percent, dots = 0, 1
-        while process.returncode is None:
-            await asyncio.sleep(.1)
-            dots = dots if dots <= 3 else 1
-            percent += randint(1, 2)
+        msg = await call.message.answer("Ваш запрос обрабатывается, ожидайте...")
+        await call.message.answer_sticker(sticker=stickers.wait_process_sticker)
+        await call.message.bot.send_chat_action(chat_id=call.message.chat.id, action='upload_document')
 
-            text = f"<b>Обработка</b> <code>{str(min(percent, 100))}%{'.' * dots}</code>"
-            await call.message.bot.edit_message_text(chat_id=call.message.chat.id, message_id=msg.message_id, text=text,
-                                                     parse_mode='html')
-            dots += 1
-        else:
-            if process.returncode == 0:
-                text = f"<b>Обработка</b> <code>{str(percent + ((100 - percent) // 2))}%{'.' * dots}</code>"
-                await call.message.bot.edit_message_text(chat_id=call.message.chat.id, message_id=msg.message_id,
-                                                         text=text,
-                                                         parse_mode='html')
-                text = f"<b>Обработка</b> <code>100%...</code>"
-                await call.message.bot.edit_message_text(chat_id=call.message.chat.id, message_id=msg.message_id,
-                                                         text=text,
-                                                         parse_mode='html')
+        await process.wait()
 
-                if '-o' in command or '-output' in command:
-                    file = FSInputFile(path='result.txt', filename='result')
-                    await call.message.answer_document(document=file)
-                else:
-                    stdout = await process.stdout.read()
-                    result = stdout.decode('windows-1251')
+        if process.returncode == 0:
+            await call.message.bot.edit_message_text(chat_id=call.message.chat.id, message_id=msg.message_id, text="Команда завершена")
 
-                    print(result)
-
-                file_id = stickers.finish_job_stickers
-                await call.message.answer_sticker(sticker=file_id)
+            if '-o' in command or '-output' in command:
+                file = FSInputFile(path='result.txt', filename='result')
+                await call.message.answer_document(document=file)
             else:
-                stderr = await process.stderr.read()
-                error = stderr.decode('windows-1251')
+                stdout = await process.stdout.read()
+                result = stdout.decode('windows-1251')
 
-                await call.message.bot.edit_message_text(chat_id=call.message.chat.id, message_id=msg.message_id,
-                                                         text=f'При выполнении команды произошла ошибка\n```bash\n{md.quote(error)}\n```',
-                                                         parse_mode='markdownv2')
+                with open('app/search_results/result.txt', 'w') as file:
+                    file.write(result)
+
+                file = FSInputFile(path='app/search_results/result.txt', filename='result')
+                await call.message.answer_document(document=file)
+
+            file_id = stickers.finish_job_stickers
+            await call.message.answer_sticker(sticker=file_id)
+        else:
+            stderr = await process.stderr.read()
+            error = stderr.decode('windows-1251')
+
+            await call.message.bot.edit_message_text(chat_id=call.message.chat.id, message_id=msg.message_id,
+                                                     text=f'При выполнении команды произошла ошибка\n```bash\n{md.quote(error)}\n```',
+                                                     parse_mode='markdownv2')
     else:
         await call.message.delete()
 
@@ -176,50 +167,38 @@ async def get_command(call: CallbackQuery, state: FSMContext):
         stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.PIPE
     )
-    msg = await call.message.answer("<b>Обработка</b> <code>0%..</code>", parse_mode='html')
 
-    percent, dots = 0, 1
-    while process.returncode is None:
-        await asyncio.sleep(.3)
-        dots = dots if dots <= 3 else 1
-        percent += randint(1, 2)
+    msg = await call.message.answer("Ваш запрос обрабатывается, ожидайте...")
+    await call.message.answer_sticker(sticker=stickers.wait_process_sticker)
+    await call.message.bot.send_chat_action(chat_id=call.message.chat.id, action='upload_document')
 
-        text = f"<b>Обработка</b> <code>{str(min(percent, 100))}%{'.' * dots}</code>"
-        await call.message.bot.edit_message_text(chat_id=call.message.chat.id, message_id=msg.message_id, text=text,
-                                                 parse_mode='html')
-        dots += 1
-    else:
-        if process.returncode == 0:
-            text = f"<b>Обработка</b> <code>{str(percent + ((100 - percent) // 2))}%{'.' * dots}</code>"
-            await call.message.bot.edit_message_text(chat_id=call.message.chat.id, message_id=msg.message_id, text=text,
-                                                     parse_mode='html')
-            text = f"<b>Обработка</b> <code>100%...</code>"
-            await call.message.bot.edit_message_text(chat_id=call.message.chat.id, message_id=msg.message_id, text=text,
-                                                     parse_mode='html')
+    await process.wait()
 
+    if process.returncode == 0:
+        await call.message.bot.edit_message_text(chat_id=call.message.chat.id, message_id=msg.message_id, text="Команда завершена")
 
-            if '-o' in command or '-output' in command:
-                file = FSInputFile(path='app/search_results/result.txt', filename='result')
-                await call.message.answer_document(document=file)
-            else:
-                stdout = await process.stdout.read()
-                result = stdout.decode('windows-1251')
-
-                with open('app/search_results/result.txt', 'w') as file:
-                    file.write(result)
-
-                file = FSInputFile(path='app/search_results/result.txt', filename='result')
-                await call.message.answer_document(document=file)
-
-            file_id = stickers.finish_job_stickers
-            await call.message.answer_sticker(sticker=file_id)
+        if '-o' in command or '-output' in command:
+            file = FSInputFile(path='app/search_results/result.txt', filename='result')
+            await call.message.answer_document(document=file)
         else:
-            stderr = await process.stderr.read()
-            error = stderr.decode('windows-1251')
+            stdout = await process.stdout.read()
+            result = stdout.decode('windows-1251')
 
-            await call.message.bot.edit_message_text(chat_id=call.message.chat.id, message_id=msg.message_id,
-                                                     text=f'При выполнении команды произошла ошибка\n```bash\n{md.quote(error)}\n```',
-                                                     parse_mode='markdownv2')
+            with open('app/search_results/result.txt', 'w') as file:
+                file.write(result)
+
+            file = FSInputFile(path='app/search_results/result.txt', filename='result')
+            await call.message.answer_document(document=file)
+
+        file_id = stickers.finish_job_stickers
+        await call.message.answer_sticker(sticker=file_id)
+    else:
+        stderr = await process.stderr.read()
+        error = stderr.decode('windows-1251')
+
+        await call.message.bot.edit_message_text(chat_id=call.message.chat.id, message_id=msg.message_id,
+                                                 text=f'При выполнении команды произошла ошибка\n```bash\n{md.quote(error)}\n```',
+                                                 parse_mode='markdownv2')
 
     await state.set_state(TempState.temp)
 
