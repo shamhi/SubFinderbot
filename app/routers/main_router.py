@@ -180,7 +180,7 @@ async def get_command(call: CallbackQuery, state: FSMContext):
 
     percent, dots = 0, 1
     while process.returncode is None:
-        await asyncio.sleep(.1)
+        await asyncio.sleep(.3)
         dots = dots if dots <= 3 else 1
         percent += randint(1, 2)
 
