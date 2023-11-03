@@ -122,7 +122,7 @@ async def search_cmd_args(call: CallbackQuery, state: FSMContext):
 @main_router.message(F.text.regexp(r"(?:https?://)?(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,7}"), StateFilter(MainState.get_domain))
 async def get_domain(message: Message, state: FSMContext):
     domain = message.text
-    with open('domains.txt', 'a') as file:
+    with open('app/search_results/history_domains.txt', 'a') as file:
         file.write(f'{domain}\n')
 
     file_id = choice(stickers.pass_domain_stickers)
