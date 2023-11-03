@@ -15,7 +15,6 @@ main_router = Router()
 async def cmd_start(message: Message, state: FSMContext):
     file_id = choice(stickers.start_stickers)
     await message.answer_sticker(sticker=file_id)
-    await asyncio.sleep(.8)
     await message.reply(
         f'Начни поиск командой /search <span class="tg-spoiler">{html.quote("<full_command>(необязательно)")}</span>',
         parse_mode='html')
@@ -111,7 +110,6 @@ async def search_cmd_args(call: CallbackQuery, state: FSMContext):
 
         file_id = stickers.not_accepted_command
         await call.message.answer_sticker(sticker=file_id)
-        await asyncio.sleep(.8)
         await call.message.answer(
             f'Начни поиск командой /search <span class="tg-spoiler">{html.quote("<full_command>(необязательно)")}</span>',
             parse_mode='html')
@@ -141,7 +139,6 @@ async def get_domain(message: Message, state: FSMContext):
 async def wrong_domain(message: Message):
     file_id = choice(stickers.not_pass_domain_stickers)
     await message.answer_sticker(sticker=file_id)
-    await asyncio.sleep(.8)
     await message.reply(
         text=f'<span class="tg-spoiler"><a href="tg://user?id={message.from_user.id}">{html.quote(message.from_user.username)}</a></span>, хорошая попытка\n'
              f'Отправь домен по типу <i>`http<span class="tg-spoiler">s</span>://example.com`</i> или <i>`<a href="http://www.example.com/">example.com</a>`</i>',
