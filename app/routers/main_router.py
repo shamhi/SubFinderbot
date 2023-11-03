@@ -60,7 +60,7 @@ async def cmd_search(message: Message, state: FSMContext, command: CommandObject
     file_id = stickers.start_job_sticker
     await message.answer_sticker(sticker=file_id)
 
-    await message.reply('Отправь домен')
+    await message.reply('Отправь домен или список доменов (можно с новой строки либо через пробел)')
 
     await state.set_state(MainState.get_domain)
 
@@ -128,6 +128,26 @@ async def search_cmd_args(call: CallbackQuery, state: FSMContext):
 @main_router.message(F.text.regexp(r"(?:https?://)?(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,7}"), StateFilter(MainState.get_domain))
 async def get_domain(message: Message, state: FSMContext):
     domain = message.text
+
+    if '\n' in message.text or ' ' in message.text:
+        await message.reply(text=f'Цель: `{md.quote("target.txt")} (Файл с доменами)`\n\n'
+                                 f'Команда `subdomains`:\n```bash\n{md.quote("subfinder -dL target.txt -silent -nc -o <filename>")}\n```\n\n'
+                                 f'Команда `webs`:\n```bash\n{md.quote("subfinder -dL target.txt -silent  |httpx -silent -nc -sc -ip -cl -title -location -server")}\n```\n\n'
+                                 f'Выберите одну из них', parse_mode='markdownv2', reply_markup=ikb.choosing_command)
+        domains = message.text.split('\n')
+
+        with open('app/search_results/current_targets.txt', 'w') as file:
+            for domain in domains:
+                domain = '\n'.join(domain.split()) if ' ' in domain else domain
+                file.write(f'{domain}\n')
+
+        with open('app/search_results/history_domains.txt', 'a') as file:
+            file.write(f'{domain}\n')
+
+        await state.update_data(domain_name='dL')
+        await state.set_state(MainState.get_command)
+        return
+
     with open('app/search_results/history_domains.txt', 'a') as file:
         file.write(f'{domain}\n')
 
@@ -161,7 +181,11 @@ async def get_command(call: CallbackQuery, state: FSMContext):
 
     domain = state_data.get('domain_name')
     command_data = call.data
-    command = ikb.get_search_commands(domain_name=domain, command_data=command_data)
+
+    if domain == 'dL':
+        command = ikb.get_search_commands_by_file(command_data=command_data)
+    else:
+        command = ikb.get_search_commands(domain_name=domain, command_data=command_data)
 
     if command is None:
         await call.answer(text='Команда не найдена')
