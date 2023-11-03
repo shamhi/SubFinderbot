@@ -11,7 +11,7 @@ import asyncio
 main_router = Router()
 
 
-@main_router.message(CommandStart())
+@main_router.message(Command('start', 'help'))
 async def cmd_start(message: Message, state: FSMContext):
     file_id = choice(stickers.start_stickers)
     await message.answer_sticker(sticker=file_id)
@@ -22,7 +22,20 @@ async def cmd_start(message: Message, state: FSMContext):
     await state.set_state(TempState.temp)
 
 
-@main_router.callback_query(F.data == ikb.cancel_data, Command('cancel'))
+@main_router.message(Command('cancel'))
+async def cmd_cancel(message: Message, state: FSMContext):
+    await message.delete()
+    await message.answer(text='Состояние поиска отменено')
+
+    await message.answer(
+        f'Начни поиск командой /search <span class="tg-spoiler">{html.quote("<full_command>(необязательно)")}</span>',
+        parse_mode='html')
+
+    await state.set_state(TempState.temp)
+
+
+
+@main_router.callback_query(F.data == ikb.cancel_data)
 async def cancel_search(call: CallbackQuery, state: FSMContext):
     await call.answer(text='Состояние поиска отменено')
     await call.message.delete()
@@ -126,7 +139,7 @@ async def get_domain(message: Message, state: FSMContext):
     file_id = choice(stickers.pass_domain_stickers)
     await message.answer_sticker(sticker=file_id)
 
-    await message.reply(text=f'Цель: {md.quote(domain)}\n\n'
+    await message.reply(text=f'Цель: `{md.quote(domain)}`\n\n'
                              f'Команда `subdomains`:\n```bash\n{md.quote("subfinder -d <domain.com> -silent -nc -o <filename>")}\n```\n\n'
                              f'Команда `webs`:\n```bash\n{md.quote("subfinder -d <domain.com> -silent  |httpx -silent -nc -sc -ip -cl -title -location -server")}\n```\n\n'
                              f'Выберите одну из них', parse_mode='markdownv2', reply_markup=ikb.choosing_command)
