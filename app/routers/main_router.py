@@ -17,7 +17,7 @@ async def cmd_start(message: Message, state: FSMContext):
     await message.answer_sticker(sticker=file_id)
     await asyncio.sleep(.8)
     await message.reply(
-        f'Начни поиск командой /search <span class"tg-spoiler">{html.quote("<full_command>(необязательно)")}</span>',
+        f'Начни поиск командой /search <span class="tg-spoiler">{html.quote("<full_command>(необязательно)")}</span>',
         parse_mode='html')
 
     await state.set_state(TempState.temp)
