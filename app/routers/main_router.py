@@ -197,6 +197,7 @@ async def get_command(call: CallbackQuery, state: FSMContext):
             await call.message.bot.edit_message_text(chat_id=call.message.chat.id, message_id=msg.message_id, text=text,
                                                      parse_mode='html')
 
+
             if '-o' in command or '-output' in command:
                 file = FSInputFile(path='app/search_results/result.txt', filename='result')
                 await call.message.answer_document(document=file)
@@ -204,7 +205,11 @@ async def get_command(call: CallbackQuery, state: FSMContext):
                 stdout = await process.stdout.read()
                 result = stdout.decode('windows-1251')
 
-                await call.message.answer(text=f'Результат:\n```\n{result}\n```', parse_mode='markdownv2')
+                with open('app/search_results/result.txt', 'w') as file:
+                    file.write(result)
+
+                file = FSInputFile(path='app/search_results/result.txt', filename='result')
+                await call.message.answer_document(document=file)
 
             file_id = stickers.finish_job_stickers
             await call.message.answer_sticker(sticker=file_id)
