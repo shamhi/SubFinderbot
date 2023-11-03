@@ -26,7 +26,7 @@ accepted_data = ['is_accepted', 'is_not_accepted']
 
 def get_search_commands(domain_name, command_data):
     search_commands = {
-        'command1': f'subfinder -d {domain_name} -silent -nc -o result.txt',
+        'command1': f'subfinder -d {domain_name} -silent -nc -o app/search_results/result.txt',
         'command2': f'subfinder -d {domain_name} -silent  |httpx -silent -nc -sc -ip -cl -title -location -server'
     }
 
