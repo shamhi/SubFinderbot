@@ -189,7 +189,7 @@ async def get_command(call: CallbackQuery, state: FSMContext):
                                                      parse_mode='html')
 
             if '-o' in command or '-output' in command:
-                file = FSInputFile(path='result.txt', filename='result')
+                file = FSInputFile(path='app/search_results/result.txt', filename='result')
                 await call.message.answer_document(document=file)
             else:
                 stdout = await process.stdout.read()
