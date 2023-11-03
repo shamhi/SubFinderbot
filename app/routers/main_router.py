@@ -1,6 +1,6 @@
 from aiogram import Router, F, html, md
 from aiogram.types import Message, CallbackQuery, FSInputFile
-from aiogram.filters import CommandStart, Command, StateFilter
+from aiogram.filters import CommandStart, Command, CommandObject, StateFilter
 from aiogram.fsm.context import FSMContext
 from app.states import MainState, TempState
 from app.keyboards import inline_kbs as ikb
@@ -23,9 +23,28 @@ async def cmd_start(message: Message, state: FSMContext):
     await state.set_state(TempState.temp)
 
 
+@main_router.callback_query(F.data == ikb.cancel_data)
+async def cancel_search(call: CallbackQuery, state: FSMContext):
+    await call.answer(text='Состояние поиска отменено')
+    await call.message.delete()
+
+    await call.message.answer(
+        f'Начни поиск командой /search <span class="tg-spoiler">{html.quote("<full_command>(необязательно)")}</span>',
+        parse_mode='html')
+
+    await state.set_state(TempState.temp)
+
+
+
 @main_router.message(Command('search'), StateFilter(TempState.temp))
-async def cmd_search(message: Message, state: FSMContext):
-    file_id = choice(stickers.start_search_sticker)
+async def cmd_search(message: Message, state: FSMContext, command: CommandObject):
+    if command.args:
+        await message.reply(text=f'Ваша команда:\n```bash\n{md.quote(command.args)}\n```\n\n'
+                                 f'Вы точно хотите ее выполнить?', reply_markup=ikb.accept_command)
+
+        await state.set_state()
+        return
+    file_id = stickers.start_job_sticker
     await message.answer_sticker(sticker=file_id)
 
     await message.reply('Отправь домен')

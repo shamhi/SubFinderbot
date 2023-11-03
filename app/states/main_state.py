@@ -5,5 +5,9 @@ class MainState(StatesGroup):
     get_command = State()
 
 
+class AcceptCommandState(StatesGroup):
+    
+
+
 class TempState(StatesGroup):
     temp = State()

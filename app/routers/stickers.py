@@ -24,4 +24,4 @@ pass_domain_stickers = [
     "CAACAgIAAxkBAAONZUPU1vsepkuBKTQHKEowFgy_bj8AAn8qAALpVQUY7SgzDdn9WF4zBA"
 ]
 
-start_search_sticker = "CAACAgIAAxkBAAIBw2VECFpdZLW00zEO5QABh4UwoM19AwACnioAAulVBRj6xXMX7pKX5DME"
+start_job_sticker = "CAACAgIAAxkBAAIBw2VECFpdZLW00zEO5QABh4UwoM19AwACnioAAulVBRj6xXMX7pKX5DME"
