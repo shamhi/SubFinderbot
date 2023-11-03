@@ -67,6 +67,8 @@ async def cmd_search(message: Message, state: FSMContext, command: CommandObject
 
 @main_router.callback_query(F.data.in_(ikb.accepted_data), StateFilter(AcceptCommandState.wait_accept))
 async def search_cmd_args(call: CallbackQuery, state: FSMContext):
+    await call.message.delete()
+
     if call.data == 'is_accepted':
         state_data = await state.get_data()
         command = state_data.get('command_args')
@@ -150,6 +152,8 @@ async def wrong_domain(message: Message):
 
 @main_router.callback_query(F.data.in_(ikb.choosing_command_data), StateFilter(MainState.get_command))
 async def get_command(call: CallbackQuery, state: FSMContext):
+    await call.message.delete()
+
     state_data = await state.get_data()
 
     domain = state_data.get('domain_name')
