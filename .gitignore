@@ -3,7 +3,11 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# txt files
 domains.txt
+history_domains.txt
+current_targets.txt
+result.txt
 
 # C extensions
 *.so
