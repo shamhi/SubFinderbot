@@ -195,7 +195,7 @@ async def get_command(call: CallbackQuery, state: FSMContext):
                 stdout = await process.stdout.read()
                 result = stdout.decode('windows-1251')
 
-                print(result)
+                await call.message.answer(text=f'Результат:\n```\n{result}\n```')
 
             file_id = stickers.finish_job_stickers
             await call.message.answer_sticker(sticker=file_id)
