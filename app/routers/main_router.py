@@ -22,7 +22,7 @@ async def cmd_start(message: Message, state: FSMContext):
     await state.set_state(TempState.temp)
 
 
-@main_router.callback_query(F.data == ikb.cancel_data | Command('cancel'))
+@main_router.callback_query(F.data == ikb.cancel_data, Command('cancel'))
 async def cancel_search(call: CallbackQuery, state: FSMContext):
     await call.answer(text='Состояние поиска отменено')
     await call.message.delete()
