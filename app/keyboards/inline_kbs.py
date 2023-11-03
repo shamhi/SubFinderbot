@@ -22,8 +22,7 @@ accept_command = InlineKeyboardMarkup(inline_keyboard=[
 choosing_command_data = ['command1', 'command2']
 cancel_data = 'cancel'
 
-is_accepted_data = 'is_accepted'
-is_not_accepted_data = 'is_not_accepted'
+accepted_data = ['is_accepted', 'is_not_accepted']
 
 def get_search_commands(domain_name, command_data):
     search_commands = {

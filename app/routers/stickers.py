@@ -25,3 +25,5 @@ pass_domain_stickers = [
 ]
 
 start_job_sticker = "CAACAgIAAxkBAAIBw2VECFpdZLW00zEO5QABh4UwoM19AwACnioAAulVBRj6xXMX7pKX5DME"
+
+not_accepted_command = "CAACAgIAAxkBAAICJWVEuCBp1L4sykTmZYwM2RboqijRAAKEKgAC6VUFGAY8eBHPQzCCMwQ"

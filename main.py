@@ -1,4 +1,5 @@
 from aiogram import Bot, Dispatcher
+from aiogram.types import BotCommand, BotCommandScopeAllPrivateChats
 from app.middlewares import InfoLoggerMiddleware, ThrottlingMiddleware
 from app.filters import ChatTypeFilter, IsAdmin
 from app.routers import main_router
@@ -12,7 +13,13 @@ def setup_logging(dp: Dispatcher):
 
 
 async def setup_commands(bot: Bot):
-    pass
+    commands = [
+        BotCommand(command='start', description='Начать состояние поиска'),
+        BotCommand(command='search', description='Поиск субдоменов (args допустимы)'),
+        BotCommand(command='cancel', description='Отменить состояние поиска'),
+    ]
+
+    await bot.set_my_commands(commands=commands, scope=BotCommandScopeAllPrivateChats())
 
 
 async def setup_aiogram(dp: Dispatcher, bot: Bot):

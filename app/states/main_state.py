@@ -6,7 +6,7 @@ class MainState(StatesGroup):
 
 
 class AcceptCommandState(StatesGroup):
-    
+    wait_accept = State()
 
 
 class TempState(StatesGroup):
