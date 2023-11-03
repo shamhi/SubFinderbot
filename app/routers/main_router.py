@@ -119,6 +119,9 @@ async def search_cmd_args(call: CallbackQuery, state: FSMContext):
             f'Начни поиск командой /search <span class="tg-spoiler">{html.quote("<full_command>(необязательно)")}</span>',
             parse_mode='html')
 
+    await call.message.answer(
+        f'Начни поиск командой /search <span class="tg-spoiler">{html.quote("<full_command>(необязательно)")}</span>',
+        parse_mode='html')
     await state.set_state(TempState.temp)
 
 
@@ -207,6 +210,9 @@ async def get_command(call: CallbackQuery, state: FSMContext):
                                                  text=f'При выполнении команды произошла ошибка\n```bash\n{md.quote(error)}\n```',
                                                  parse_mode='markdownv2')
 
+    await call.message.answer(
+        f'Начни поиск командой /search <span class="tg-spoiler">{html.quote("<full_command>(необязательно)")}</span>',
+        parse_mode='html')
     await state.set_state(TempState.temp)
 
 
