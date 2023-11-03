@@ -24,10 +24,9 @@ async def cmd_start(message: Message, state: FSMContext):
 
 @main_router.message(Command('cancel'))
 async def cmd_cancel(message: Message, state: FSMContext):
-    await message.delete()
     await message.answer(text='Состояние поиска отменено')
 
-    await message.answer(
+    await message.reply(
         f'Начни поиск командой /search <span class="tg-spoiler">{html.quote("<full_command>(необязательно)")}</span>',
         parse_mode='html')
 
