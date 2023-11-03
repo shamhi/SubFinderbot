@@ -11,7 +11,7 @@ import asyncio
 main_router = Router()
 
 
-@main_router.message(CommandStart(), Command('help'))
+@main_router.message(CommandStart())
 async def cmd_start(message: Message, state: FSMContext):
     file_id = choice(stickers.start_stickers)
     await message.answer_sticker(sticker=file_id)
