@@ -184,6 +184,9 @@ async def get_command(call: CallbackQuery, state: FSMContext):
         if '-o' in command or '-output' in command:
             file = FSInputFile(path='app/search_results/result.txt', filename='result')
             await call.message.answer_document(document=file)
+
+            with open('app/search_results/result.txt', 'w') as file:
+                file.write('')
         else:
             stdout = await process.stdout.read()
             result = stdout.decode('windows-1251')
