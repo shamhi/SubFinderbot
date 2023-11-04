@@ -210,6 +210,7 @@ async def get_command(call: CallbackQuery, state: FSMContext):
 
         if '-o' in command or '-output' in command:
             file = FSInputFile(path='app/search_results/result.txt', filename='result')
+
             await call.message.answer_document(document=file)
 
             with open('app/search_results/result.txt', 'w') as file:
@@ -228,7 +229,9 @@ async def get_command(call: CallbackQuery, state: FSMContext):
         await call.message.answer_sticker(sticker=file_id)
     else:
         stderr = await process.stderr.read()
+        print(stderr)
         error = stderr.decode('windows-1251')
+        print(error)
 
         await call.message.bot.edit_message_text(chat_id=call.message.chat.id, message_id=msg.message_id,
                                                  text=f'При выполнении команды произошла ошибка\n```bash\n{md.quote(error)}\n```',
