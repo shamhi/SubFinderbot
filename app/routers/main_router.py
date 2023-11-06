@@ -50,7 +50,13 @@ async def cancel_search(call: CallbackQuery, state: FSMContext):
 @main_router.message(Command('search'), StateFilter(TempState.temp))
 async def cmd_search(message: Message, state: FSMContext, command: CommandObject):
     if command.args:
-        if command.args.split()[0] not in ['subfinder', 'httpx']:
+        if command.args.split()[0].strip() not in ['subfinder', 'httpx'] or all(arg.split()[0].strip() not in ['subfinder', 'httpx'] for arg in command.args.split('|')) or all(arg.split()[0].strip() not in ['subfinder', 'httpx'] for arg in command.args.split('&')):
+            file_id = choice(stickers.not_pass_domain_stickers)
+            await message.answer_sticker(sticker=file_id)
+            await message.reply(
+                text=f'<span class="tg-spoiler"><a href="tg://user?id={message.from_user.id}">{html.quote(message.from_user.username)}</a></span>, хорошая попытка\n'
+                     f'Ваша команда должна начинаться с <code>subfinder</code> либо <code>httpx</code>',
+                parse_mode='html')
             return
         await state.set_state(AcceptCommandState.wait_accept)
 
@@ -113,13 +119,11 @@ async def search_cmd_args(call: CallbackQuery, state: FSMContext):
                                                      text=f'При выполнении команды произошла ошибка\n```bash\n{md.quote(error)}\n```',
                                                      parse_mode='markdownv2')
     else:
-        await call.message.delete()
-
         file_id = stickers.not_accepted_command
         await call.message.answer_sticker(sticker=file_id)
-        await call.message.answer(
-            f'Начни поиск командой /search <span class="tg-spoiler">{html.quote("<full_command>(необязательно)")}</span>',
-            parse_mode='html')
+        # await call.message.answer(
+        #     f'Начни поиск командой /search <span class="tg-spoiler">{html.quote("<full_command>(необязательно)")}</span>',
+        #     parse_mode='html')
 
     await call.message.answer(
         f'Начни поиск командой /search <span class="tg-spoiler">{html.quote("<full_command>(необязательно)")}</span>',
@@ -127,7 +131,7 @@ async def search_cmd_args(call: CallbackQuery, state: FSMContext):
     await state.set_state(TempState.temp)
 
 
-@main_router.message(F.text.regexp(r"^((?!-)[A-Za-z0-9-]{1,63})"), StateFilter(MainState.get_domain))
+@main_router.message(F.text.regexp(r"^(https?:\/\/)?[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$"), StateFilter(MainState.get_domain))
 async def get_domain(message: Message, state: FSMContext):
     domain = message.text
 
