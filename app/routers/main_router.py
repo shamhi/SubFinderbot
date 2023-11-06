@@ -50,6 +50,8 @@ async def cancel_search(call: CallbackQuery, state: FSMContext):
 @main_router.message(Command('search'), StateFilter(TempState.temp))
 async def cmd_search(message: Message, state: FSMContext, command: CommandObject):
     if command.args:
+        if command.args.split()[0] not in ['subfinder', 'httpx']:
+            return
         await state.set_state(AcceptCommandState.wait_accept)
 
         await message.reply(text=f'Ваша команда:\n```bash\n{md.quote(command.args)}\n```\n\n'
@@ -125,7 +127,7 @@ async def search_cmd_args(call: CallbackQuery, state: FSMContext):
     await state.set_state(TempState.temp)
 
 
-@main_router.message(F.text.regexp(r"(?:https?://)?(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,7}"), StateFilter(MainState.get_domain))
+@main_router.message(F.text.regexp(r"^(https?:\/\/)?[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$"), StateFilter(MainState.get_domain))
 async def get_domain(message: Message, state: FSMContext):
     domain = message.text
 
