@@ -127,7 +127,7 @@ async def search_cmd_args(call: CallbackQuery, state: FSMContext):
     await state.set_state(TempState.temp)
 
 
-@main_router.message(F.text.regexp(r"^((?!-)[A-Za-z0-9-]{1,63}(?"), StateFilter(MainState.get_domain))
+@main_router.message(F.text.regexp(r"^((?!-)[A-Za-z0-9-]{1,63})"), StateFilter(MainState.get_domain))
 async def get_domain(message: Message, state: FSMContext):
     domain = message.text
 
