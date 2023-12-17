@@ -50,14 +50,14 @@ async def cancel_search(call: CallbackQuery, state: FSMContext):
 @main_router.message(Command('search'), StateFilter(TempState.temp))
 async def cmd_search(message: Message, state: FSMContext, command: CommandObject):
     if command.args:
-        # if command.args.split()[0].strip() not in ['subfinder', 'httpx'] or all(arg.split()[0].strip() not in ['subfinder', 'httpx'] for arg in command.args.split('|')) or all(arg.split()[0].strip() not in ['subfinder', 'httpx'] for arg in command.args.split('&')):
-        #     file_id = choice(stickers.not_pass_domain_stickers)
-        #     await message.answer_sticker(sticker=file_id)
-        #     await message.reply(
-        #         text=f'<span class="tg-spoiler"><a href="tg://user?id={message.from_user.id}">{html.quote(message.from_user.username)}</a></span>, хорошая попытка\n'
-        #              f'Ваша команда должна начинаться с <code>subfinder</code> либо <code>httpx</code>',
-        #         parse_mode='html')
-        #     return
+        if command.args.split()[0].strip() not in ['subfinder', 'httpx'] or all(arg.split()[0].strip() not in ['subfinder', 'httpx'] for arg in command.args.split('|')) or all(arg.split()[0].strip() not in ['subfinder', 'httpx'] for arg in command.args.split('&')):
+            file_id = choice(stickers.not_pass_domain_stickers)
+            await message.answer_sticker(sticker=file_id)
+            await message.reply(
+                text=f'<span class="tg-spoiler"><a href="tg://user?id={message.from_user.id}">{html.quote(message.from_user.username)}</a></span>, хорошая попытка\n'
+                     f'Ваша команда должна начинаться с <code>subfinder</code> либо <code>httpx</code>',
+                parse_mode='html')
+            return
         await state.set_state(AcceptCommandState.wait_accept)
 
         await message.reply(text=f'Ваша команда:\n```bash\n{md.quote(command.args)}\n```\n\n'
