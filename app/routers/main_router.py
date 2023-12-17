@@ -50,7 +50,7 @@ async def cancel_search(call: CallbackQuery, state: FSMContext):
 @main_router.message(Command('search'), StateFilter(TempState.temp))
 async def cmd_search(message: Message, state: FSMContext, command: CommandObject):
     if command.args:
-        if command.args.split()[0].strip() not in ['subfinder', 'httpx'] or all(arg.split()[0].strip() not in ['subfinder', 'httpx'] for arg in command.args.split('|')) or all(arg.split()[0].strip() not in ['subfinder', 'httpx'] for arg in command.args.split('&')):
+        if 1==1 or command.args.split()[0].strip() not in ['subfinder', 'httpx'] or all(arg.split()[0].strip() not in ['subfinder', 'httpx'] for arg in command.args.split('|')) or all(arg.split()[0].strip() not in ['subfinder', 'httpx'] for arg in command.args.split('&')):
             file_id = choice(stickers.not_pass_domain_stickers)
             await message.answer_sticker(sticker=file_id)
             await message.reply(
