@@ -107,7 +107,8 @@ async def search_cmd_args(call: CallbackQuery, state: FSMContext):
                     file.write(result)
 
                 file = FSInputFile(path='app/search_results/result.txt', filename='result')
-                await call.message.answer_document(document=file)
+                try: await call.message.answer_document(document=file)
+                except: ...
 
             file_id = stickers.finish_job_stickers
             await call.message.answer_sticker(sticker=file_id)
