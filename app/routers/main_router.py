@@ -1,11 +1,11 @@
 from aiogram import Router, F, html, md
 from aiogram.types import Message, CallbackQuery, FSInputFile
-from aiogram.filters import CommandStart, Command, CommandObject, StateFilter
+from aiogram.filters import Command, CommandObject, StateFilter
 from aiogram.fsm.context import FSMContext
 from app.states import MainState, TempState, AcceptCommandState
 from app.keyboards import inline_kbs as ikb
 from app.routers import stickers
-from random import choice, randint
+from random import choice
 import asyncio
 
 main_router = Router()
